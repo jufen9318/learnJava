@@ -21,7 +21,41 @@ public class JoinTest extends JFrame {
         progressBar1.setStringPainted(true);
         progressBar2.setStringPainted(true);
 
-        //threadA = new Thread(())
+        threadA = new Thread(new Runnable() {
+            int count =0;
+            @Override
+            public void run() {
+                while (true)
+                {
+                    progressBar1.setValue(++count);
+                    try {
+                        threadA.sleep(100);
+                        threadB.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        threadA.start();
+        threadB = new Thread(new Runnable() {
+            int count =0;
+            @Override
+            public void run() {
+                while (true)
+                {
+                    progressBar2.setValue(++count);
+                    try {
+                        threadB.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if(count==100)
+                        break;
+                }
+            }
+        });
+        threadB.start();
     }
 
     public static void init(JFrame frame,int width,int height)
